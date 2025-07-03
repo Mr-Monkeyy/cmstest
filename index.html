@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Services & Prices</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: #111;
+      color: #fff;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .container {
+      background: #171a23;
+      border-radius: 20px;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.6);
+      padding: 32px 48px;
+      min-width: 320px;
+      max-width: 90vw;
+    }
+    h1 {
+      margin: 0 0 20px 0;
+      font-weight: 600;
+      color: #2e9aff;
+      letter-spacing: 2px;
+      text-align: center;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 12px 0;
+      font-size: 1.15em;
+      letter-spacing: 1px;
+      border-bottom: 1px solid #222c;
+      padding-bottom: 8px;
+    }
+    .row:last-child {
+      border-bottom: none;
+    }
+    .label {
+      color: #2e9aff;
+      font-weight: 500;
+    }
+    @media (max-width: 480px) {
+      .container {
+        padding: 20px 10px;
+        min-width: unset;
+      }
+      .row {
+        font-size: 1em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Services & Prices</h1>
+    <div id="price-container">
+      <!-- prices will load here -->
+    </div>
+  </div>
+
+  <script>
+    const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRMEChUNhVNEJNOm7BRaWcMQMbdqPIV8bSIS1RbphXRagM_SzHcML96D_Kaayq8v8sh8nh5oJfaNc3z/pub?output=csv";
+
+    fetch(sheetURL)
+      .then(res => res.text())
+      .then(csv => {
+        const rows = csv.trim().split("\n").slice(1); // skip header
+        let html = "";
+        rows.forEach(row => {
+          const [service, price] = row.split(",");
+          if (service && price) {
+            html += `
+              <div class="row">
+                <span class="label">${service}</span>
+                <span>${price}</span>
+              </div>
+            `;
+          }
+        });
+        document.getElementById("price-container").innerHTML = html;
+      });
+  </script>
+</body>
+</html>
