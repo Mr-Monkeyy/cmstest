@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Services & Prices</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     html, body {
       height: 100%;
@@ -68,28 +68,28 @@
   <div class="container">
     <h1>Services & Prices</h1>
     <div id="price-container">
-      <!-- JS will load data here -->
+      Loading prices...
     </div>
   </div>
 
   <script>
     const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQTfKgvuHp9_SAVZ7Tuc-DXx2nmp0NMrvwHB2nIxQd0v9tXpH8m_O32EqlRSt7j18HIR1jRV8Q-dXDb/pub?output=csv";
 
-    fetch(sheetURL)
+    fetch(sheetURL + "&_=" + new Date().getTime())
       .then(res => {
-        if (!res.ok) throw new Error("Fetch failed");
+        if (!res.ok) throw new Error("Network response was not ok");
         return res.text();
       })
       .then(csv => {
-        const rows = csv.trim().split("\n").slice(1); // skip header
+        const rows = csv.trim().split("\n").slice(1); // skip header line
         let html = "";
         rows.forEach(row => {
-          const [service, price] = row.split(",");
-          if (service && price) {
+          const parts = row.split(",");
+          if(parts.length >= 2){
             html += `
               <div class="row">
-                <span class="label">${service}</span>
-                <span>${price}</span>
+                <span class="label">${parts[0]}</span>
+                <span>${parts[1]}</span>
               </div>
             `;
           }
@@ -97,8 +97,8 @@
         document.getElementById("price-container").innerHTML = html;
       })
       .catch(err => {
-        console.error("Failed to load prices:", err);
         document.getElementById("price-container").innerHTML = "<p style='color:red;'>Failed to load prices.</p>";
+        console.error("Error loading CSV:", err);
       });
   </script>
 </body>
